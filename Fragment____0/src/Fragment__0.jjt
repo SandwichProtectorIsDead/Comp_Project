@@ -1,0 +1,334 @@
+/**
+ * JJTree template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
+ */
+options
+{
+ lookahead=2;
+ multi=true;
+ VISITOR = true ;
+
+}
+
+PARSER_BEGIN(Fragment_0)
+
+import java.io.*;
+public class Fragment_0
+{
+  public static void main(String args [])
+  {
+
+/*
+File file = new File("C:/robots.txt");
+		FileInputStream fis = null;
+
+		try {
+			fis = new FileInputStream(file);
+
+			System.out.println("Total file size to read (in bytes) : "
+					+ fis.available());
+
+			int content;
+			while ((content = fis.read()) != -1) {
+				// convert to char and display it
+				System.out.print((char) content);
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+*/
+
+   //oops
+   File file = new File("C:\\Users\\HAITAM\\Desktop\\code.txt");
+   FileInputStream fis = null;
+   try {
+			fis = new FileInputStream(file);
+
+			
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		if(fis!=null) {
+		  System.out.println("reading from a file :");
+          new Fragment_0(fis);
+
+		  }else { 
+    System.out.print("Input :");
+    new Fragment_0(System.in);
+  }
+    
+    try
+    {
+      CodeGen mCode = new CodeGen();
+      ASTStart n =  Fragment_0.Start();
+      n.dump("");
+      Fragment0_Visitor mV = new Fragment0_Visitor();
+      n.jjtAccept(mV,mCode);
+      mCode.printCode();
+     
+     
+    }
+    catch (Exception e)
+    {
+      System.out.println("Oops.");
+      System.out.println(e.getMessage());
+    }
+  }
+}
+
+PARSER_END(Fragment_0)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\r"
+| "\n"
+}
+
+/*SPECIAL_TOKEN :
+{
+  	<EOL_UNIX : "\n">
+  |	<EOL_WINDOWS : "\r\n">
+ 
+}
+*/
+
+TOKEN : /* Literals */
+{
+  
+  <NOMBRE : <FLOTTANT >|<ENTIER > >
+| < BOOLEEN:< Vrai>|<Faux >> 
+| <IDENT : (["a"-"z"])+(["a"-"z"] | ["A"-"Z" ]|["0"-"9"]|"_")*>
+| < FLOTTANT: (["0"-"9"])*"."(["1"-"9"])+ >
+| < ENTIER: ["1"-"9"] (["0"-"9"])* >
+| <Vrai:"Vrai">
+| <Faux:"Faux">
+//| <EOL : "\n">
+| <point_vir:";">
+|< par_gauche:"(">
+| < par_droite:")">
+| < bra_gauche:"{" >
+| < bra_droite:"}" >
+| < point_intero:"?">
+| < deux_points:":">
+}
+
+TOKEN : /*operations uniaires*/
+{
+   
+   <neg:"!" >
+  | <pui:"**" >
+  | < moins :"-">
+  | <typeof:"Typeof">
+
+}
+
+TOKEN : /*operations arithmetiques binaires*/
+{
+    <plus :"+" >
+  | <mult :"*" >
+  | <divi :"/" >
+  | <mod :"%" >
+ 
+
+}
+
+TOKEN : /*conditionel*/
+{
+   <et :"&&" >
+  | <ou :"||" >
+  | <double_ega :"==" >
+  | <diff:"!=" >
+  | <ega:"=" >
+  | <ega_t:"===" >
+  | <diff_t:"!==" >
+  | <sup :" >" >
+  | <inf :" < " >
+  | <sup_ega :" >=">
+  | <inf_ega :"<=">
+}
+TOKEN :/*mots reservés*/
+{
+  < Break: "Break" > 
+| < Continue: "Continue" > 
+|< Sinon: "Sinon" > 
+|< Pour: "Pour" > 
+|< Fonction: "Fonction" > 
+|< Si: "Si" > 
+|< Retourner: "Retourner" > 	
+| < TantQue: "TantQue" >
+| < Cas: "Cas" > 
+| < Rattrapper: "Rattrapper" >
+| < Class: "Class" >
+| < Essayer: "Essayer" > 
+| <Faire: "Faire" > 
+| <Finalement:"Finalement" >
+| <Lancer: "Lancer" > 
+| < Etend:"Etend">
+| < Get:"Get">
+| <Set:"Set">
+| <Nul:"Nul">
+}
+  
+
+
+
+
+
+
+
+ASTStart Start() :
+{}
+{
+  programme()
+  
+  {
+    
+    return jjtThis;
+  }
+
+}
+
+void programme() #root_programm :
+{}
+ {
+ commande()( commande()|programme())* < EOF >
+
+}
+
+void commande()#command :
+{Token tok1;}
+{
+  <point_vir> {jjtThis.code = "";}
+| expression()<point_vir >{jjtThis.code="";}
+//| identifiant() <ega> expression()<point_vir>{jjtThis.code="SetVar \n"+t1.image;}
+//| identifiant() <ega> expression()
+| assigne()//tok1=<IDENT><ega> expression()<point_vir>{jjtThis.code="SetVar \n"+tok1.image;}
+//| tok1=<IDENT><ega> expression()
+
+}
+
+void assigne()#void:
+{
+  Token tok1;
+}
+{
+  tok1=<IDENT><ega> expression()<point_vir>{jjtThis.code="SetVar "+tok1.image+"\n";}#assi(1)
+ 
+}
+
+
+
+
+void expression () #expression:
+{
+  Token tok1,tok2;}
+ {
+   conditional_expression() (tok1=<point_intero>{jjtThis.value=tok1 ; }cond_v()
+   tok1=<deux_points> {jjtThis.value=tok1.image; }cond_f())*
+     
+  }
+ 
+  
+
+ void cond_v() #void:
+ {
+   Token tok1 ;
+ }
+ {
+   expression(){jjtThis.code ="ConJmp \n" ;}#cond_v(1)
+ }
+
+ void cond_f() #void:
+ {
+   Token tok1 ;
+ }
+ {
+   expression(){ jjtThis.code ="Jmp \n" ; }#cond_f(1)
+   
+ }
+ 
+void conditional_expression() #void :
+{Token tok1;
+  }
+{
+  additive_expression()(tok1=<ega_t> additive_expression(){ jjtThis.value=tok1.image;jjtThis.code ="Equal \n" ;}#teste_égalité(2))*
+}
+
+void additive_expression () #void:
+{
+Token tok1;
+  }
+{
+  multiplicative_expression()(
+   tok1=<plus >multiplicative_expression() { jjtThis.value=tok1.image;jjtThis.code ="AddiRe  \n" ;}#op_add(2)
+  |tok1=<moins> multiplicative_expression(){ jjtThis.value=tok1.image;jjtThis.code ="SubiRe  \n" ;} #op_moins(2))*
+}
+
+void multiplicative_expression ()#void :
+{
+  Token t;
+}
+{
+       expression_unaire()((t=<mult> expression_unaire(){jjtThis.value=t.image;jjtThis.code +="MultiRe \n";}#op_mult(2)
+      |t=<divi> expression_unaire(){jjtThis.value=t.image; jjtThis.code ="DiviRe \n";}#op_divi(2)
+      | t=<mod> expression_unaire(){jjtThis.value=t.image;jjtThis.code ="Modulo \n";}#op_mod(2)
+      ))*
+}
+
+void expression_unaire() #void :
+{Token t ;}
+{
+  
+  <par_gauche> expression()<par_droite>
+ | negation()//t= <moins> () {jjtThis.value=t.image; jjtThis.code ="NegaRe \n";}#neg(1)
+ | identifiant()
+ | nombre()
+}
+
+void negation() #neg(1):
+{
+  Token t; }
+  {
+   t= <moins> <par_gauche> expression()<par_droite> {jjtThis.value=t.image; jjtThis.code ="NegaRe \n";}
+  |t= <moins> identifiant() {jjtThis.value=t.image; jjtThis.code ="NegaRe \n";}
+  | t= <moins> nombre() {jjtThis.value=t.image; jjtThis.code ="NegaRe \n";}
+  }
+
+
+  
+
+
+void identifiant() #id(0):
+{
+  Token t;
+}
+  {
+  t=<IDENT>
+  {
+    
+    jjtThis.code = "GetVar "+t.image+"\n";
+    jjtThis.taille = 1;
+    jjtThis.value = t.image;
+  
+    
+  }
+}
+
+void nombre() #nombre(0):
+{
+  Token t;
+}
+{
+  t=<NOMBRE >
+  {
+   
+    jjtThis.code ="CstRe "+t.image+"\n";
+   	jjtThis.taille = 1;
+   	jjtThis.value = t.image;
+   
+   
+  }
+}
