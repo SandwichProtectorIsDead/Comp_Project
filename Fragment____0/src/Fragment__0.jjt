@@ -177,10 +177,7 @@ void commande()#command :
 {
   <point_vir> {jjtThis.code = "";}
 | expression()<point_vir >{jjtThis.code="";}
-//| identifiant() <ega> expression()<point_vir>{jjtThis.code="SetVar \n"+t1.image;}
-//| identifiant() <ega> expression()
-| assigne()//tok1=<IDENT><ega> expression()<point_vir>{jjtThis.code="SetVar \n"+tok1.image;}
-//| tok1=<IDENT><ega> expression()
+| assigne()
 
 }
 
