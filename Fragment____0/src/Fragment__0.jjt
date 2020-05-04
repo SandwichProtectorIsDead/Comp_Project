@@ -158,7 +158,6 @@ ASTStart Start() :
   programme()
   
   {
-    
     return jjtThis;
   }
 
@@ -167,34 +166,35 @@ ASTStart Start() :
 void programme() #root_programm :
 {}
  {
- commande()( commande()|programme())* < EOF >
+   commande()( commande()|programme())* < EOF >
 
 }
 
 void commande()#command :
 {Token tok1;}
-{
-  <point_vir> {jjtThis.code = "";}
-| expression()<point_vir >{jjtThis.code="";}
-| assigne()
+ {
+    <point_vir> {jjtThis.code = "";}
+  | expression()<point_vir >{jjtThis.code="";}
+  | assigne()
 
-}
+ }
 
 void assigne()#void:
 {
   Token tok1;
 }
-{
-  tok1=<IDENT><ega> expression()<point_vir>{jjtThis.code="SetVar "+tok1.image+"\n";}#assi(1)
+ {
+   tok1=<IDENT><ega> expression()<point_vir>{jjtThis.code="SetVar "+tok1.image+"\n";}#assi(1)
  
-}
+ }
 
 
 
 
-void expression () #expression:
+ void expression () #expression:
 {
-  Token tok1,tok2;}
+  Token tok1,tok2;
+}
  {
    conditional_expression() (tok1=<point_intero>{jjtThis.value=tok1 ; }cond_v()
    tok1=<deux_points> {jjtThis.value=tok1.image; }cond_f())*
@@ -202,37 +202,39 @@ void expression () #expression:
   }
  
   
-
  void cond_v() #void:
- {
+{
    Token tok1 ;
- }
+}
  {
    expression(){jjtThis.code ="ConJmp \n" ;}#cond_v(1)
  }
 
  void cond_f() #void:
- {
+{
    Token tok1 ;
- }
+}
  {
    expression(){ jjtThis.code ="Jmp \n" ; }#cond_f(1)
    
  }
  
 void conditional_expression() #void :
-{Token tok1;
-  }
 {
-  additive_expression()(tok1=<ega_t> additive_expression(){ jjtThis.value=tok1.image;jjtThis.code ="Equal \n" ;}#teste_égalité(2))*
+  Token tok1;
 }
+ {
+   additive_expression()(tok1=<ega_t> additive_expression(){ jjtThis.value=tok1.image;jjtThis.code ="Equal \n" ;}#teste_égalité(2))*
+ }
 
 void additive_expression () #void:
-{
+ {
+   
 Token tok1;
-  }
+
+ }
 {
-  multiplicative_expression()(
+   multiplicative_expression()(
    tok1=<plus >multiplicative_expression() { jjtThis.value=tok1.image;jjtThis.code ="AddiRe  \n" ;}#op_add(2)
   |tok1=<moins> multiplicative_expression(){ jjtThis.value=tok1.image;jjtThis.code ="SubiRe  \n" ;} #op_moins(2))*
 }
@@ -241,7 +243,7 @@ void multiplicative_expression ()#void :
 {
   Token t;
 }
-{
+ {
        expression_unaire()((t=<mult> expression_unaire(){jjtThis.value=t.image;jjtThis.code +="MultiRe \n";}#op_mult(2)
       |t=<divi> expression_unaire(){jjtThis.value=t.image; jjtThis.code ="DiviRe \n";}#op_divi(2)
       | t=<mod> expression_unaire(){jjtThis.value=t.image;jjtThis.code ="Modulo \n";}#op_mod(2)
@@ -249,14 +251,16 @@ void multiplicative_expression ()#void :
 }
 
 void expression_unaire() #void :
-{Token t ;}
 {
-  
-  <par_gauche> expression()<par_droite>
- | negation()//t= <moins> () {jjtThis.value=t.image; jjtThis.code ="NegaRe \n";}#neg(1)
- | identifiant()
- | nombre()
+  Token t ;
 }
+ {
+  
+   <par_gauche> expression()<par_droite>
+   | negation()
+   | identifiant()
+   | nombre()
+ }
 
 void negation() #neg(1):
 {
@@ -291,8 +295,10 @@ void nombre() #nombre(0):
 {
   Token t;
 }
-{
+  {
+    
   t=<NOMBRE >
+  
   {
    
     jjtThis.code ="CstRe "+t.image+"\n";
