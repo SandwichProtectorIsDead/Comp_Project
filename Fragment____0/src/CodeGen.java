@@ -38,7 +38,7 @@ public class CodeGen {
 	}
 	
 	public void printCode() {
-		System.out.println(this.codeGen);
+		System.out.println(this.codeGen+"Halt");
 	}
 	
 }
